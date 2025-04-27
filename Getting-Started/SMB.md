@@ -79,3 +79,5 @@ The **flag.txt** file was successfully retrieved and stored in the local folder.
 
 ---
 
+For a more detailed walkthrough, check out my blog post on this challenge [here](https://my-htb-hacking-journey.hashnode.dev/smb-unlocked-how-i-hacked-into-smb-shares-and-retrieved-the-flag).
+
