@@ -1,4 +1,4 @@
-# Penetration Testing - Module 0: Introduction to Penetration Testing
+# Penetration Testing - Getting Started
 
 Welcome to my **Getting Started** module! This is the **Tier 0** module, and it serves as an introductory foundation for your journey into the world of ethical hacking and penetration testing. In this module, I will share my learning experience from the **Hack The Box** (HTB) platform and cover the essential topics that are crucial to understanding the basics of penetration testing.
 
