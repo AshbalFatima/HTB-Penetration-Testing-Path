@@ -22,7 +22,7 @@ In this challenge, we had to exploit SMB shares, gain access as the **bob** user
     ```
     - This command runs an Nmap scan using the `smb-enum-shares` script to enumerate SMB shares on the target IP.
     - _Snapshot of the result:_
-    ![Nmap SMB Scan](Getting-Started/images/smb-enum-shares.JPG)
+    ![Nmap SMB Scan](images/smb-enum-shares.JPG)
 
 - **Step 2**: Connect to the SMB share as the **bob** user.
 
