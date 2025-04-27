@@ -18,7 +18,7 @@ In this challenge, we had to exploit SMB shares, gain access as the **bob** user
 - **Step 1**: Use Nmap to scan for SMB shares on the target host.
 
     ```bash
-    nmap --script smb-enum-shares 10.129.74.154
+    nmap --script smb-enum-shares <IP-ADDRESS>
     ```
     - This command runs an Nmap scan using the `smb-enum-shares` script to enumerate SMB shares on the target IP.
     - _Snapshot of the result:_
@@ -43,26 +43,18 @@ In this challenge, we had to exploit SMB shares, gain access as the **bob** user
     - _Snapshot of the result:_
     ![Directory Listing](path/to/snapshot)
 
-- **Step 4**: Navigate into the **flag** directory.
+- **Step 4**: Navigate into the **flag** directory and list its contents.
 
     ```bash
-    smb: \> cd flag
+   smb: \> cd flag
+   smb: \flag\> ls
     ```
-    - This command changes the current directory to **flag** where we expect to find **flag.txt**.
+    - The first command changes the current directory to flag, where we expect to find **flag.txt**. The second command **lists** the contents of the flag directory, showing the flag.txt file.
 
     - _Snapshot of the result:_
     ![Change Directory](path/to/snapshot)
 
-- **Step 5**: List the contents of the **flag** directory.
-
-    ```bash
-    smb: \flag\> ls
-    ```
-    - This shows the **flag.txt** file inside the **flag** folder.
-    - _Snapshot of the result:_
-    ![Flag Directory](path/to/snapshot)
-
-- **Step 6**: Retrieve the **flag.txt** file from the share.
+- **Step 5**: Retrieve the **flag.txt** file from the share.
 
     ```bash
     smb: \flag\> get flag.txt
