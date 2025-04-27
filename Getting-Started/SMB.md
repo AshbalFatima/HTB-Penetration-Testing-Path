@@ -28,12 +28,13 @@ In this challenge, we had to exploit SMB shares, gain access as the **bob** user
 - **Step 2**: Connect to the SMB share as the **bob** user.
 
     ```bash
-    smbclient -U bob \\\\10.129.74.154\\users
+    smbclient -U bob \\\\<IP-ADDRESS>\\users
     ```
     - The **`smbclient`** command connects to SMB shares, and by default, it uses **port 445** for the connection if no port is explicitly specified. This is the standard port for SMB communication, so even though we didn't specify a port in the command, **`smbclient`** automatically attempted to connect via port 445.
 
     - _Snapshot of the result:_
-    ![Connection Attempt](path/to/snapshot)
+      
+    ![Connection Attempt](images/smb-client.JPG)
 
 - **Step 3**: Once logged in, list the available directories in the share.
 
@@ -42,7 +43,8 @@ In this challenge, we had to exploit SMB shares, gain access as the **bob** user
     ```
     - This lists the files and directories in the **users** share, where we find the **flag** directory.
     - _Snapshot of the result:_
-    ![Directory Listing](path/to/snapshot)
+      
+    ![Directory Listing](images/smb-ls.JPG)
 
 - **Step 4**: Navigate into the **flag** directory and list its contents.
 
@@ -53,7 +55,8 @@ In this challenge, we had to exploit SMB shares, gain access as the **bob** user
     - The first command changes the current directory to flag, where we expect to find **flag.txt**. The second command **lists** the contents of the flag directory, showing the flag.txt file.
 
     - _Snapshot of the result:_
-    ![Change Directory](path/to/snapshot)
+      
+      ![Change Directory](images/smb-cdflag.JPG)
 
 - **Step 5**: Retrieve the **flag.txt** file from the share.
 
@@ -62,13 +65,17 @@ In this challenge, we had to exploit SMB shares, gain access as the **bob** user
     ```
     - This command downloads the **flag.txt** file from the share to the local machine.
     - _Snapshot of the result:_
-    ![File Download](path/to/snapshot)
+      
+    ![File Download](images/smb-getflag.JPG)
 
 ---
 
 ### Final Outcome
 
 The **flag.txt** file was successfully retrieved and stored in the local folder.
+
+ ![File Download](images/smb-local-ss.JPG)
+
 
 ---
 
