@@ -1,4 +1,4 @@
-# SMB (Server Message Block) – Accessing Shares
+# SMB (Server Message Block) – Accessing Shares 
 
 **SMB (Server Message Block)** is a network file sharing protocol used for providing access to shared files, printers, and other resources across a network.
 
