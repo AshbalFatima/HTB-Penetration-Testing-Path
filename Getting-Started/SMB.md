@@ -8,7 +8,7 @@
 
 - **Objective**: Identify and enumerate the SMB shares on the target system. Once you've located the shares, authenticate as the **bob** user and navigate to the **flag** folder. Inside, you’ll find the **flag.txt** file. Your mission is to extract its contents and retrieve the flag.
 
-In this challenge, we had to exploit SMB shares, gain access as the **bob** user, and extract the flag hidden within the **flag.txt** file. Time to hack into the system and retrieve our prize!
+For this challenge, we had to exploit SMB shares, gain access as the **bob** user, and extract the flag hidden within the **flag.txt** file. It was time to hack into the system and retrieve our prize!
 
 
 ---
