@@ -48,6 +48,16 @@ Each step will demonstrate real-world techniques and explain the thought process
 ---
 
 ## 🔍 Enumeration
+### ✅ Enumeration Summary (Table Format)
+
+| Step                                | Action/Tool                          | Result                                                                 |
+|-------------------------------------|--------------------------------------|------------------------------------------------------------------------|
+| 🔍 Initial Nmap Scan                | `nmap -sV --open`                    | Found open ports: `22` (SSH), `80` (HTTP); Identified service versions |
+| 🔍 Full TCP Scan                    | `nmap -p- --open`                    | No additional open ports found                                        |
+| 📡 Banner Grabbing                  | `nc -nv`                             | SSH banner confirms OpenSSH; HTTP open but no banner shown            |
+| 🧪 Scripted Nmap Scan               | `nmap -sC -p 22,80`                  | SSH host keys and basic HTTP info (no title)                          |
+| 🧪 HTTP Enumeration Script          | `nmap --script=http-enum`           | Apache detected; no interesting directories or services revealed      |
+
 
 We start with network and service discovery using Nmap.
 
