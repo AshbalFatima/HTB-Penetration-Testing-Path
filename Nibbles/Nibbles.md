@@ -1,5 +1,7 @@
 # 🎯 Nibbles — HTB Retired Machine Walkthrough
 
+ ![Nibbles](images/nibbles_card.webp)
+ 
 This is a **greybox penetration testing** project — meaning we had limited prior knowledge about the target, such as its IP address, but not full internal access like in a whitebox test.
 
 ---
@@ -128,3 +130,31 @@ nmap -sV --script=http-enum -oA nibbles_nmap_http_enum 10.129.42.190
 
 ---
 
+## Web Footprinting
+We can use whatweb to try to identify the web application in use.
+![What Web](images/whatweb.JPG)
+This tool does not identify any standard web technologies in use. Browsing to the target in Firefox shows us a simple "Hello world!" message.
+![Firefox View](images/website.webfootprinting.JPG)
+Checking the page source reveals an interesting comment.
+![Web Source Code](images/sourcecode.webfootprinting.JPG)
+The HTML comment mentions a directory named nibbleblog. Let us check this with whatweb.
+![What Web Nibbleblog](images/whatwebnibbleblog.webfootprinting.JPG)
+Now we are starting to get a better picture of things. We can see some of the technologies in use such as HTML5, jQuery, and PHP. We can also see that the site is running Nibbleblog, which is a free blogging engine built using PHP.
+
+Directory Enumeration
+Browsing to the /nibbleblog directory in Firefox, we do not see anything exciting on the main page.
+![Nibbleblog](images/nibbleblog.webfootprinting.JPG)
+A quick Google search for "nibbleblog exploit" yields this Nibbleblog File Upload Vulnerability. 
+![Nibbleblog Vulnerability](images/nibbleblogexploit.webfootprinting.JPG)
+The flaw allows an authenticated attacker to upload and execute arbitrary PHP code on the underlying web server. The Metasploit module in question works for version 4.0.3. We do not know the exact version of Nibbleblog in use yet, but it is a good bet that it is vulnerable to this. If we look at the source code of the Metasploit module, we can see that the exploit uses user-supplied credentials to authenticate the admin portal at /admin.php.
+
+Let us use Gobuster to be thorough and check for any other accessible pages/directories.
+![Gobuster](images/gobuster.webfootprinting.JPG)
+Gobuster finishes very quickly and confirms the presence of the admin.php page. We can check the README page for interesting information, such as the version number.
+![ReadMe](images/nibbleblogreadme.webfootprinting.JPG)
+So we validate that version 4.0.3 is in use, confirming that this version is likely vulnerable to the Metasploit module (though this could be an old README page). Nothing else interesting pops out at us. Let us check out the admin portal login page.
+![Admin Page](images/nibbleblogadmin.webfootprint.JPG)
+Now, to use the exploit mentioned above, we will need valid admin credentials. We can try some authorization bypass techniques and common credential pairs manually, such as admin:admin and admin:password, to no avail. There is a reset password function, but we receive an e-mail error. Also, too many login attempts too quickly trigger a lockout with the message Nibbleblog security error - Blacklist protection.
+
+Let us go back to our directory brute-forcing results. The 200 status codes show pages/directories that are directly accessible. The 403 status codes in the output indicate that access to these resources is forbidden. Finally, the 301 is a permanent redirect. Let us explore each of these. Browsing to nibbleblog/themes/. We can see that directory listing is enabled on the web application. Maybe we can find something interesting while poking around?
+![Theme Page](images/nibbleblogadmin.webfootprint.JPG)
