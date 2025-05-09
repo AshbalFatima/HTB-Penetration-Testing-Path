@@ -61,6 +61,8 @@ nmap -sV --open -oA nibbles_initial_scan 10.129.42.190
 - `--open`: Show only open ports  
 - `-oA`: Output in all formats (`.nmap`, `.gnmap`, `.xml`)
 
+  ![Nmap Nibbles Initial Scan](images/Enumeration.nmap.JPG)
+
 ### 📌 Findings from Initial Scan
 
 - `22/tcp` – OpenSSH 7.2p2 (Ubuntu)  
