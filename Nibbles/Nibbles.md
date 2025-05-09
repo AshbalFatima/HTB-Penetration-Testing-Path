@@ -130,31 +130,211 @@ nmap -sV --script=http-enum -oA nibbles_nmap_http_enum 10.129.42.190
 
 ---
 
-## Web Footprinting
-We can use whatweb to try to identify the web application in use.
-![What Web](images/whatweb.JPG)
-This tool does not identify any standard web technologies in use. Browsing to the target in Firefox shows us a simple "Hello world!" message.
+## 🌐 Web Footprinting
+
+Once we had port 80 open, I decided to explore the web service manually and with tools to identify technologies, hidden paths, and potential vulnerabilities.
+
+---
+
+### 🔎 Step 1: Identify Web Technologies
+
+- Ran `whatweb` on the base URL.
+- No major web technologies were detected.
+- Visiting in Firefox showed a simple `Hello world!` message.
+
+![What Web](images/whatweb.JPG)  
 ![Firefox View](images/website.webfootprinting.JPG)
-Checking the page source reveals an interesting comment.
+
+---
+
+### 🧠 Step 2: Inspect Page Source
+
+- Checked page source.
+- Found a **comment** pointing to a `/nibbleblog` directory.
+
 ![Web Source Code](images/sourcecode.webfootprinting.JPG)
-The HTML comment mentions a directory named nibbleblog. Let us check this with whatweb.
+
+---
+
+### 🔍 Step 3: Probe the Nibbleblog Directory
+
+- Ran `whatweb` again, this time on `/nibbleblog`.
+- Now it detected:
+  - **Nibbleblog CMS**
+  - **HTML5**
+  - **jQuery**
+  - **PHP**
+
 ![What Web Nibbleblog](images/whatwebnibbleblog.webfootprinting.JPG)
-Now we are starting to get a better picture of things. We can see some of the technologies in use such as HTML5, jQuery, and PHP. We can also see that the site is running Nibbleblog, which is a free blogging engine built using PHP.
 
-Directory Enumeration
-Browsing to the /nibbleblog directory in Firefox, we do not see anything exciting on the main page.
-![Nibbleblog](images/nibbleblog.webfootprinting.JPG)
-A quick Google search for "nibbleblog exploit" yields this Nibbleblog File Upload Vulnerability. 
+---
+
+### 🗂️ Step 4: Manual Browsing & Vulnerability Research
+
+- Visited `/nibbleblog` in browser – default CMS page.
+- A quick Google search for “nibbleblog exploit” revealed:
+  - A **File Upload Vulnerability** in version **4.0.3**
+  - Supported by a **Metasploit module**
+  - Requires **authentication**
+
+![Nibbleblog](images/nibbleblog.webfootprinting.JPG)  
 ![Nibbleblog Vulnerability](images/nibbleblogexploit.webfootprinting.JPG)
-The flaw allows an authenticated attacker to upload and execute arbitrary PHP code on the underlying web server. The Metasploit module in question works for version 4.0.3. We do not know the exact version of Nibbleblog in use yet, but it is a good bet that it is vulnerable to this. If we look at the source code of the Metasploit module, we can see that the exploit uses user-supplied credentials to authenticate the admin portal at /admin.php.
 
-Let us use Gobuster to be thorough and check for any other accessible pages/directories.
+---
+
+### 🚪 Step 5: Directory Bruteforcing
+
+- Used `gobuster` to enumerate directories inside `/nibbleblog`
+- Found:
+  - `/admin.php`
+  - `/readme.html`
+  - `/themes/`
+  - `/content/`
+
 ![Gobuster](images/gobuster.webfootprinting.JPG)
-Gobuster finishes very quickly and confirms the presence of the admin.php page. We can check the README page for interesting information, such as the version number.
-![ReadMe](images/nibbleblogreadme.webfootprinting.JPG)
-So we validate that version 4.0.3 is in use, confirming that this version is likely vulnerable to the Metasploit module (though this could be an old README page). Nothing else interesting pops out at us. Let us check out the admin portal login page.
-![Admin Page](images/nibbleblogadmin.webfootprint.JPG)
-Now, to use the exploit mentioned above, we will need valid admin credentials. We can try some authorization bypass techniques and common credential pairs manually, such as admin:admin and admin:password, to no avail. There is a reset password function, but we receive an e-mail error. Also, too many login attempts too quickly trigger a lockout with the message Nibbleblog security error - Blacklist protection.
 
-Let us go back to our directory brute-forcing results. The 200 status codes show pages/directories that are directly accessible. The 403 status codes in the output indicate that access to these resources is forbidden. Finally, the 301 is a permanent redirect. Let us explore each of these. Browsing to nibbleblog/themes/. We can see that directory listing is enabled on the web application. Maybe we can find something interesting while poking around?
-![Theme Page](images/nibbleblogadmin.webfootprint.JPG)
+---
+
+### 📖 Step 6: Check README for Version Info
+
+- Opened the `readme.html` file
+- Version **4.0.3** confirmed
+- This matches the version affected by the Metasploit exploit
+
+![ReadMe](images/nibbleblogreadme.webfootprinting.JPG)
+
+---
+
+### 🔐 Step 7: Try Admin Portal
+
+- Navigated to `/nibbleblog/admin.php`
+- Tried common credentials like `admin:admin`, `admin:password`
+- Login failed
+- Password reset gives **email error**
+- Too many failed attempts triggered **blacklist protection**
+
+![Admin Page](images/nibbleblogadmin.webfootprint.JPG)
+
+---
+
+### 🧰 Step 8: Explore Accessible & Forbidden Directories
+
+| Status Code | Meaning               | Action Taken                   |
+|-------------|------------------------|--------------------------------|
+| 200         | Accessible             | Explored contents              |
+| 403         | Forbidden              | Marked for potential bypass    |
+| 301         | Redirect               | Followed to see final content  |
+
+- `/themes/` → Directory listing enabled, but nothing useful  
+![Gobuster Theme Page](images/nibbleblogtheme1.webfootprinting.JPG)  
+![Theme Page](images/nibbleblogtheme2.webfootprinting.JPG)
+
+- `/content/` → Contained `public`, `private`, and `tmp` folders  
+![Content Page](images/nibbleblogcontent.webfootprinting.JPG)
+
+---
+
+### 🧾 Step 9: Sensitive File Discovery
+
+- Found `users.xml` in `/private`
+  - Confirmed `admin` username
+  - Listed blacklisted IPs
+
+![Private Content Page](images/nibblebloguserxml.webfootprinting.JPG)  
+![user.xml Page](images/xml.webfootprinting.JPG)
+
+- No password found.
+- Documentation confirmed there’s no default password for admin.
+
+---
+
+### 🧩 Step 10: Final Directory Sweep
+
+- No new directories found after additional brute-forcing at root.
+- Manually reviewing known directories revealed one more file:
+  - `config.xml`
+``` bash
+curl -s http://10.129.42.190/nibbleblog/content/private/config.xml | xmllint --format -
+
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<config>
+  <name type="string">Nibbles</name>
+  <slogan type="string">Yum yum</slogan>
+  <footer type="string">Powered by Nibbleblog</footer>
+  <advanced_post_options type="integer">0</advanced_post_options>
+  <url type="string">http://10.129.42.190/nibbleblog/</url>
+  <path type="string">/nibbleblog/</path>
+  <items_rss type="integer">4</items_rss>
+  <items_page type="integer">6</items_page>
+  <language type="string">en_US</language>
+  <timezone type="string">UTC</timezone>
+  <timestamp_format type="string">%d %B, %Y</timestamp_format>
+  <locale type="string">en_US</locale>
+  <img_resize type="integer">1</img_resize>
+  <img_resize_width type="integer">1000</img_resize_width>
+  <img_resize_height type="integer">600</img_resize_height>
+  <img_resize_quality type="integer">100</img_resize_quality>
+  <img_resize_option type="string">auto</img_resize_option>
+  <img_thumbnail type="integer">1</img_thumbnail>
+  <img_thumbnail_width type="integer">190</img_thumbnail_width>
+  <img_thumbnail_height type="integer">190</img_thumbnail_height>
+  <img_thumbnail_quality type="integer">100</img_thumbnail_quality>
+  <img_thumbnail_option type="string">landscape</img_thumbnail_option>
+  <theme type="string">simpler</theme>
+  <notification_comments type="integer">1</notification_comments>
+  <notification_session_fail type="integer">0</notification_session_fail>
+  <notification_session_start type="integer">0</notification_session_start>
+  <notification_email_to type="string">admin@nibbles.com</notification_email_to>
+  <notification_email_from type="string">noreply@10.10.10.134</notification_email_from>
+  <seo_site_title type="string">Nibbles - Yum yum</seo_site_title>
+  <seo_site_description type="string"/>
+  <seo_keywords type="string"/>
+  <seo_robots type="string"/>
+  <seo_google_code type="string"/>
+  <seo_bing_code type="string"/>
+  <seo_author type="string"/>
+  <friendly_urls type="integer">0</friendly_urls>
+  <default_homepage type="integer">0</default_homepage>
+</config>
+```
+
+While examining the `config.xml`, we didn't find any passwords — but we noticed:
+
+- Site name: **Nibbles**
+- Notification email: **admin@nibbles.com**
+- The **HTB box name** is also *nibbles*
+
+💡 **Observation:**  
+These repetitive mentions made us suspect **"nibbles"** might be the admin password.
+
+### ✅ Login Attempt: Success
+
+We used the following credentials:
+
+- **Username**: `admin` (confirmed earlier from `users.xml`)
+- **Password**: `nibbles` (inferred from config hints)
+
+![Logged In Successfully Page](images/loggedin.webfootprinting.JPG)
+
+📌 We are now logged into the **Nibbleblog admin portal**.
+
+## 🧠 Enumeration Recap
+
+Here’s what we’ve accomplished so far:
+
+| Step | Task Performed                                                                 |
+|------|--------------------------------------------------------------------------------|
+| 1️⃣   | Ran `nmap` – Found ports `22` (SSH) and `80` (HTTP)                           |
+| 2️⃣   | Visited the web server – Saw "Hello world!" with no tech revealed             |
+| 3️⃣   | Checked page source – Found `/nibbleblog` in HTML comment                     |
+| 4️⃣   | Used `whatweb` – Detected **Nibbleblog**, PHP, HTML5, and jQuery              |
+| 5️⃣   | Explored `/nibbleblog` – Found login portal at `/admin.php`                   |
+| 6️⃣   | Ran `gobuster` – Confirmed presence of admin panel and other directories      |
+| 7️⃣   | Found `README` – Identified version as **4.0.3**, known to be vulnerable       |
+| 8️⃣   | Explored `/content/private/` – Found `users.xml` and `config.xml`             |
+| 9️⃣   | Confirmed **admin** username                                                  |
+| 🔟   | Noted blacklist protection for too many login attempts                         |
+| 🔑   | Guessed the password **nibbles** based on config hints – login successful!     |
+
+🎯 **Key Takeaway:**  
+Enumeration isn't just about tools — it's about **observing patterns**, **correlating data**, and **thinking laterally**. A simple config string led us to full admin access.
