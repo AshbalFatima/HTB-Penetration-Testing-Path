@@ -96,7 +96,7 @@ nmap -sC -p 22,80 -oA nibbles_script_scan 10.129.42.190
 - Identified SSH host keys  
 - HTTP title: "Site doesn't have a title"
 
-  ```bash
+```bash
 nmap -sV --script=http-enum -oA nibbles_nmap_http_enum 10.129.42.190
 ```
 - Detected Apache on port 80  
