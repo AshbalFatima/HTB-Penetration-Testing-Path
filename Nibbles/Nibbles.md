@@ -1,4 +1,4 @@
-# 🐽 Nibbles — HTB Retired Machine Walkthrough
+# 🎯 Nibbles — HTB Retired Machine Walkthrough
 
 This is a **greybox penetration testing** project — meaning we had limited prior knowledge about the target, such as its IP address, but not full internal access like in a whitebox test.
 
