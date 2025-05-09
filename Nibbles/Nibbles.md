@@ -134,8 +134,6 @@ nmap -sV --script=http-enum -oA nibbles_nmap_http_enum 10.129.42.190
 
 Once we had port 80 open, I decided to explore the web service manually and with tools to identify technologies, hidden paths, and potential vulnerabilities.
 
----
-
 ### 🔎 Step 1: Identify Web Technologies
 
 - Ran `whatweb` on the base URL.
@@ -145,16 +143,12 @@ Once we had port 80 open, I decided to explore the web service manually and with
 ![What Web](images/whatweb.JPG)  
 ![Firefox View](images/website.webfootprinting.JPG)
 
----
-
 ### 🧠 Step 2: Inspect Page Source
 
 - Checked page source.
 - Found a **comment** pointing to a `/nibbleblog` directory.
 
 ![Web Source Code](images/sourcecode.webfootprinting.JPG)
-
----
 
 ### 🔍 Step 3: Probe the Nibbleblog Directory
 
@@ -167,8 +161,6 @@ Once we had port 80 open, I decided to explore the web service manually and with
 
 ![What Web Nibbleblog](images/whatwebnibbleblog.webfootprinting.JPG)
 
----
-
 ### 🗂️ Step 4: Manual Browsing & Vulnerability Research
 
 - Visited `/nibbleblog` in browser – default CMS page.
@@ -179,8 +171,6 @@ Once we had port 80 open, I decided to explore the web service manually and with
 
 ![Nibbleblog](images/nibbleblog.webfootprinting.JPG)  
 ![Nibbleblog Vulnerability](images/nibbleblogexploit.webfootprinting.JPG)
-
----
 
 ### 🚪 Step 5: Directory Bruteforcing
 
@@ -193,8 +183,6 @@ Once we had port 80 open, I decided to explore the web service manually and with
 
 ![Gobuster](images/gobuster.webfootprinting.JPG)
 
----
-
 ### 📖 Step 6: Check README for Version Info
 
 - Opened the `readme.html` file
@@ -202,8 +190,6 @@ Once we had port 80 open, I decided to explore the web service manually and with
 - This matches the version affected by the Metasploit exploit
 
 ![ReadMe](images/nibbleblogreadme.webfootprinting.JPG)
-
----
 
 ### 🔐 Step 7: Try Admin Portal
 
@@ -214,8 +200,6 @@ Once we had port 80 open, I decided to explore the web service manually and with
 - Too many failed attempts triggered **blacklist protection**
 
 ![Admin Page](images/nibbleblogadmin.webfootprint.JPG)
-
----
 
 ### 🧰 Step 8: Explore Accessible & Forbidden Directories
 
@@ -232,8 +216,6 @@ Once we had port 80 open, I decided to explore the web service manually and with
 - `/content/` → Contained `public`, `private`, and `tmp` folders  
 ![Content Page](images/nibbleblogcontent.webfootprinting.JPG)
 
----
-
 ### 🧾 Step 9: Sensitive File Discovery
 
 - Found `users.xml` in `/private`
@@ -245,8 +227,6 @@ Once we had port 80 open, I decided to explore the web service manually and with
 
 - No password found.
 - Documentation confirmed there’s no default password for admin.
-
----
 
 ### 🧩 Step 10: Final Directory Sweep
 
@@ -318,7 +298,7 @@ We used the following credentials:
 
 📌 We are now logged into the **Nibbleblog admin portal**.
 
-## 🧠 Enumeration Recap
+### 🧾 Summary of Findings (Vulnerability Assessment/ Web Footprinting Phase)
 
 Here’s what we’ve accomplished so far:
 
@@ -336,5 +316,6 @@ Here’s what we’ve accomplished so far:
 | 🔟   | Noted blacklist protection for too many login attempts                         |
 | 🔑   | Guessed the password **nibbles** based on config hints – login successful!     |
 
-🎯 **Key Takeaway:**  
-Enumeration isn't just about tools — it's about **observing patterns**, **correlating data**, and **thinking laterally**. A simple config string led us to full admin access.
+---
+
+
