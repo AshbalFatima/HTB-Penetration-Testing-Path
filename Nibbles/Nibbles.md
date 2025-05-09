@@ -64,9 +64,11 @@ Here's a quick overview of the enumeration steps performed and what each one rev
 We start with network and service discovery using Nmap.
 
 ### 🧪 Initial Scan (Top 1000 TCP Ports)
+
 ```bash
 nmap -sV --open -oA nibbles_initial_scan 10.129.42.190
 ```
+
 ### 🧪 Initial Scan Flags Explained
 
 - `-sV`: Service version detection  
@@ -82,11 +84,13 @@ nmap -sV --open -oA nibbles_initial_scan 10.129.42.190
 - Host is likely running **Ubuntu Linux**
 
 ### 🔁 Full TCP Scan (All 65,535 Ports)
+
 To catch services on non-standard ports:
 
 ```bash
 nmap -p- --open -oA nibbles_full_tcp_scan 10.129.42.190
 ```
+
 ✅ No additional open ports found.
 
 ### 🖐 Banner Grabbing with Netcat
@@ -100,6 +104,7 @@ nc -nv 10.129.42.190 80
 ```
 
 ### 🔍 Scripted Scan (`-sC`)
+
 Run default NSE scripts on open ports:
 
 ```bash
@@ -122,3 +127,4 @@ nmap -sV --script=http-enum -oA nibbles_nmap_http_enum 10.129.42.190
 | 80   | HTTP    | Apache (version redacted)|
 
 ---
+
