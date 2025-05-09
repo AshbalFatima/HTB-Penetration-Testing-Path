@@ -48,7 +48,9 @@ Each step will demonstrate real-world techniques and explain the thought process
 ---
 
 ## 🔍 Enumeration
+
 ### ✅ Enumeration Summary (Table Format)
+Here's a quick overview of the enumeration steps performed and what each one revealed:
 
 | Step                                | Action/Tool                          | Result                                                                 |
 |-------------------------------------|--------------------------------------|------------------------------------------------------------------------|
@@ -78,8 +80,6 @@ nmap -sV --open -oA nibbles_initial_scan 10.129.42.190
 - `22/tcp` – OpenSSH 7.2p2 (Ubuntu)  
 - `80/tcp` – Apache HTTP Server (Ubuntu)  
 - Host is likely running **Ubuntu Linux**
-
----
 
 ### 🔁 Full TCP Scan (All 65,535 Ports)
 To catch services on non-standard ports:
@@ -114,11 +114,11 @@ nmap -sV --script=http-enum -oA nibbles_nmap_http_enum 10.129.42.190
 - Detected Apache on port 80  
 - No interesting directories or services revealed  
 
----
-
 ### 🧾 Summary of Findings (Enumeration Phase)
 
 | Port | Service | Version                  |
 |------|---------|--------------------------|
 | 22   | SSH     | OpenSSH 7.2p2 (Ubuntu)   |
 | 80   | HTTP    | Apache (version redacted)|
+
+---
