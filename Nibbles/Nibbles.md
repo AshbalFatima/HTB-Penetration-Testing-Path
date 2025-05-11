@@ -209,11 +209,13 @@ Once we had port 80 open, I decided to explore the web service manually and with
 | 403         | Forbidden              | Marked for potential bypass    |
 | 301         | Redirect               | Followed to see final content  |
 
-- `/themes/` → Directory listing enabled, but nothing useful  
+- `/themes/` → Directory listing enabled, but nothing useful
+  
 ![Gobuster Theme Page](images/nibbleblogtheme1.webfootprinting.JPG)  
 ![Theme Page](images/nibbleblogtheme2.webfootprinting.JPG)
 
-- `/content/` → Contained `public`, `private`, and `tmp` folders  
+- `/content/` → Contained `public`, `private`, and `tmp` folders
+  
 ![Content Page](images/nibbleblogcontent.webfootprinting.JPG)
 
 ### 🧾 Step 9: Sensitive File Discovery
@@ -375,8 +377,6 @@ http://<host>/nibbleblog/content/private/plugins/my_image/
 
 ✅ We have **Remote Code Execution (RCE)** running as the `nibbler` user!
 
----
-
 ### 🐚 Reverse Shell Setup
 
 Next steps:
@@ -410,8 +410,6 @@ Now interactive, we navigated to the home directory.
 
 ![Importing pty and correcting directory](images/correctdirectory.initialfoothold.JPG)
 
----
-
 ### 🏁 User Flag Obtained
 
 - Navigated to `/home/nibbler`
@@ -422,5 +420,5 @@ Now interactive, we navigated to the home directory.
 | `user.txt`    | 🎯 User flag              |
 | `personal.zip`| 📦 Archive file, suspicious |
 
-
+---
 
