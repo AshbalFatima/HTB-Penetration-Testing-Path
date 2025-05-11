@@ -318,4 +318,109 @@ Here’s what we’ve accomplished so far:
 
 ---
 
+## 🧩 Initial Foothold
+
+Now that we are logged into the **Nibbleblog admin portal**, our next step is to gain **code execution** and escalate to a **reverse shell** on the webserver.
+
+We explored the following admin pages:
+
+| Page     | Purpose                              |
+|----------|--------------------------------------|
+| Publish  | Create new content                   |
+| Comments | View existing comments (none found)  |
+| Manage   | Edit/delete posts and categories     |
+| Settings | Confirms version 4.0.3               |
+| Themes   | Install pre-selected themes          |
+| Plugins  | Manage plugins (upload enabled)      |
+
+### 📁 Plugin Exploration
+
+- The **My image plugin** allows us to upload an image file.
+- Could this be exploited to upload a **malicious PHP file**?
+
+![Image Upload Page](images/imageupload.initialfoothold.JPG)
+
+- Uploading files via page/post creation didn’t work.
+- We then visited the **Plugins** page.
+
+![Plugin Page](images/plugin.initialfoothold.JPG)
+
+- We tried uploading a **PHP test snippet** via this plugin.
+
+![PHP Code](images/phpcode.initialfoothold.JPG)
+
+- Uploaded using the Browse button:
+
+![Upload File](images/uploadphptestfile.initialfoothold.JPG)
+
+- Errors appeared but might not indicate failure:
+
+![Errors](images/errors.initialfoothold.JPG)
+
+### 🔍 Finding the Uploaded File
+
+- Based on earlier enumeration, the plugin files live at:
+- 
+http://<host>/nibbleblog/content/private/plugins/my_image/
+
+- Browsing to this directory, we found our file:
+
+![Uploaded Test File](images/uploadedtestfile.initialfoothold.JPG)
+
+![Opening Uploaded Test File](images/webimagetest.initialfoothold.JPG)
+
+- We then confirmed **command execution** using curl:
+
+![Curl test](images/curlimagetest.initialfoothold.JPG)
+
+✅ We have **Remote Code Execution (RCE)** running as the `nibbler` user!
+
+---
+
+### 🐚 Reverse Shell Setup
+
+Next steps:
+
+- Edited the PHP file to include a **reverse shell one-liner**
+- Added our VPN IP in `<ATTACKING IP>` and a listener port in `<LISTENING PORT>`
+
+![PHP hacker script](images/hackfile.initialfoothold.JPG)
+
+- Uploaded the PHP file again
+- Started a Netcat listener:
+
+![NC Listening](images/startlistening.initialfoothold.JPG)
+
+- Executed the payload via curl or browser:
+
+http://nibbleblog/content/private/plugins/my_image/image.php
+
+![Reverse Shell](images/reverseshell.initialfoothold.JPG)
+
+🎉 Reverse shell successfully caught!
+
+### 🧪 Shell Upgrade
+
+The shell wasn’t fully interactive, so we upgraded it using:
+
+``` bash
+python3 -c 'import pty; pty.spawn("/bin/bash")'
+```
+Now interactive, we navigated to the home directory.
+
+![Importing pty and correcting directory](images/correctdirectory.initialfoothold.JPG)
+
+---
+
+### 🏁 User Flag Obtained
+
+- Navigated to `/home/nibbler`
+- Retrieved and submitted the `user.txt` flag
+
+| File Name     | Description               |
+|---------------|---------------------------|
+| `user.txt`    | 🎯 User flag              |
+| `personal.zip`| 📦 Archive file, suspicious |
+
+
 
