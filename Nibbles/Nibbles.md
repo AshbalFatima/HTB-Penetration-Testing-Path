@@ -420,5 +420,7 @@ Now interactive, we navigated to the home directory.
 | `user.txt`    | 🎯 User flag              |
 | `personal.zip`| 📦 Archive file, suspicious |
 
+![Final](images/lsfinal.initialfoothold.JPG)
+
 ---
 
