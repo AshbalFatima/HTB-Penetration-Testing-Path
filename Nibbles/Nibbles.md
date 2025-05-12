@@ -423,4 +423,60 @@ Now interactive, we navigated to the home directory.
 ![Final](images/lsfinal.initialfoothold.JPG)
 
 ---
+## 🧠 Privilege Escalation
+
+We have shell access as the **nibbler** user. Time to escalate!
+
+### 📦 Found Archive
+
+- Unzipped `personal.zip`
+- Revealed a script: `monitor.sh`
+- File is **owned and writeable** by `nibbler`
+
+![Unzip](images/unzip.privilegeescalation.JPG)  
+![monitor.sh](images/monitorsh.privilegeescalation.JPG)
+
+### 🛠️ Recon with LinEnum
+
+- Served `LinEnum.sh` from local machine
+- Pulled it on target using `wget`
+- Made it executable and ran it
+
+![wget LinEnum](images/wgetlinenum.privilegeescalation.JPG)  
+![Run LinEnum](images/runlinenum.privilegeescalation.JPG)
+
+#### 🔍 Interesting Output:
+
+| Finding | Details |
+|---------|---------|
+| `sudo` privilege | `nibbler` can run `/home/nibbler/personal/stuff/monitor.sh` as root |
+
+![Sudo Note](images/sudonote.privilegeescalation.JPG)
+
+### 🚀 Gaining Root
+
+- Appended a reverse shell one-liner to `monitor.sh`
+- Started a netcat listener
+- Executed script with `sudo`
+- Got a root shell!
+
+![Append](images/appendmonitorsh.privilegeescalation.JPG)  
+![Listening](images/startlistening.privilegeescalation.JPG)  
+![Execute](images/executeshell.privilegeescalation.JPG)  
+![Root](images/root.privilegeescalation.JPG)
+
+---
+
+## ✅ Conclusion
+
+This was my **first successful pwn** of a retired Hack The Box machine!
+
+🔍 Key lessons:
+- Enumeration is everything — even the smallest config leak can matter
+- Always explore what writeable files and `sudo` permissions are available
+- Use tools like LinEnum to speed up privilege escalation checks
+
+More write-ups coming soon. 🧑‍💻
+
+---
 
